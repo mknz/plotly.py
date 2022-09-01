@@ -3395,6 +3395,25 @@ Invalid property path '{key_path_str}' for layout
         """
         import plotly.io as pio
 
+        FORCE_PNG_RENDERES = [
+            "jupyterlab",
+            "notebook",
+            "notebook_connected",
+            "browser",
+            "firefox",
+            "chrome",
+            "chromium",
+            "iframe",
+            "iframe_connected",
+        ]  # NOQA
+        THR_BYTES = 20_000_000
+        nbytes = 0
+        for data in self.data:
+            for col in ["x", "y", "z"]:
+                if col in data:
+                    nbytes += data[col].nbytes
+        if nbytes > THR_BYTES:
+            kwargs["renderer"] = "png"
         return pio.show(self, *args, **kwargs)
 
     def to_json(self, *args, **kwargs):
